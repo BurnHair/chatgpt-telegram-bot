@@ -1,6 +1,6 @@
+import json
 import os.path
 import pathlib
-import json
 from datetime import date
 
 

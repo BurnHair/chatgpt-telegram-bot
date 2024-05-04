@@ -1,6 +1,8 @@
-import os, requests
-from typing import Dict
+import os
 from datetime import datetime
+from typing import Dict
+
+import requests
 
 from .plugin import Plugin
 
@@ -9,38 +11,41 @@ class WorldTimeApiPlugin(Plugin):
     """
     A plugin to get the current time from a given timezone, using WorldTimeAPI
     """
+
     def __init__(self):
-        default_timezone = os.getenv('WORLDTIME_DEFAULT_TIMEZONE')
+        default_timezone = os.getenv("WORLDTIME_DEFAULT_TIMEZONE")
         if not default_timezone:
-            raise ValueError('WORLDTIME_DEFAULT_TIMEZONE environment variable must be set to use WorldTimeApiPlugin')
+            raise ValueError("WORLDTIME_DEFAULT_TIMEZONE environment variable must be set to use WorldTimeApiPlugin")
         self.default_timezone = default_timezone
 
     def get_source_name(self) -> str:
         return "WorldTimeAPI"
 
     def get_spec(self) -> [Dict]:
-        return [{
-            "name": "worldtimeapi",
-            "description": f"Get the current time from a given timezone",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "timezone": {
-                        "type": "string",
-                        "description": f"The timezone identifier (e.g: `Europe/Rome`). Infer this from the location."
-                                       f"Use {self.default_timezone} if not specified."
-                    }
+        return [
+            {
+                "name": "worldtimeapi",
+                "description": f"Get the current time from a given timezone",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "timezone": {
+                            "type": "string",
+                            "description": f"The timezone identifier (e.g: `Europe/Rome`). Infer this from the location."
+                            f"Use {self.default_timezone} if not specified.",
+                        }
+                    },
+                    "required": ["timezone"],
                 },
-                "required": ["timezone"],
-            },
-        }]
+            }
+        ]
 
     async def execute(self, function_name, helper, **kwargs) -> Dict:
-        timezone = kwargs.get('timezone', self.default_timezone)
-        url = f'https://worldtimeapi.org/api/timezone/{timezone}'
+        timezone = kwargs.get("timezone", self.default_timezone)
+        url = f"https://worldtimeapi.org/api/timezone/{timezone}"
 
         try:
-            wtr = requests.get(url).json().get('datetime')
+            wtr = requests.get(url).json().get("datetime")
             wtr_obj = datetime.strptime(wtr, "%Y-%m-%dT%H:%M:%S.%f%z")
             time_24hr = wtr_obj.strftime("%H:%M:%S")
             time_12hr = wtr_obj.strftime("%I:%M:%S %p")

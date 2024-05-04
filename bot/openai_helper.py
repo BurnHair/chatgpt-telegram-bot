@@ -1,24 +1,22 @@
 from __future__ import annotations
+
 import datetime
+import io
+import json
 import logging
 import os
-
-import tiktoken
-
-import openai
-
-import requests
-import json
-import httpx
-import io
-from datetime import date
 from calendar import monthrange
+from datetime import date
+
+import httpx
+import openai
+import requests
+import tiktoken
 from PIL import Image
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
-
-from utils import is_direct_result, encode_image, decode_image
 from plugin_manager import PluginManager
+from utils import decode_image, encode_image, is_direct_result
 
 # Models can be found here: https://platform.openai.com/docs/models/overview
 # Models gpt-3.5-turbo-0613 and  gpt-3.5-turbo-16k-0613 will be deprecated on June 13, 2024

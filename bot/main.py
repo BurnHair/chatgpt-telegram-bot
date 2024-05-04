@@ -3,8 +3,8 @@ import os
 
 from dotenv import load_dotenv
 
+from openai_helper import OpenAIHelper, are_functions_available, default_max_tokens
 from plugin_manager import PluginManager
-from openai_helper import OpenAIHelper, default_max_tokens, are_functions_available
 from telegram_bot import ChatGPTTelegramBot
 
 

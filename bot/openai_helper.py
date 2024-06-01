@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import io
+import re
 import json
 import logging
 import os
@@ -374,9 +375,15 @@ class OpenAIHelper:
         :return: The audio in bytes and the text size
         """
         bot_language = self.config["bot_language"]
+        voice = self.config["tts_voice"]
+        pattern = r"\b[a-z]{2}-[A-Z]{2}-[A-Za-z]+\b"
+        matches = re.findall(pattern, text)
+        if matches:
+            voice = matches[0]
+            text = text.replace(voice, "")
         try:
             response = await self.client.audio.speech.create(
-                model=self.config["tts_model"], voice=self.config["tts_voice"], input=text, response_format="opus"
+                model=self.config["tts_model"], voice=voice, input=text, response_format="opus"
             )
 
             temp_file = io.BytesIO()

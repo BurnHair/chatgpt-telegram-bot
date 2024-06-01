@@ -862,7 +862,7 @@
         "image_no_prompt":"请提供提示！（例如/image 猫）",
         "image_fail":"生成图像失败",
         "vision_fail":"图像解释失败",
-        "tts_no_prompt":"请提供文本！（例如/tts 我的房子）",
+        "tts_no_prompt":"请提供文本！（例如/tts 我的房子），可选添加音色，如 /tts 我的房子  zh-CN-YunxiNeural",
         "tts_fail":"生成语音失败",
         "media_download_fail":["下载音频文件失败", "请确保文件不要太大（最大20MB）"],
         "media_type_fail":"不支持的文件类型",

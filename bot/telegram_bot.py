@@ -72,6 +72,7 @@ class ChatGPTTelegramBot:
             BotCommand(command="start", description="开始使用"),
             BotCommand(command="balance", description="查询剩余额度"),
             BotCommand(command="check", description="每日签到"),
+            BotCommand(command="dice", description="丢骰子"),
             BotCommand(command="help", description=localized_text("help_description", bot_language)),
             BotCommand(command="reset", description=localized_text("reset_description", bot_language)),
             BotCommand(command="stats", description=localized_text("stats_description", bot_language)),

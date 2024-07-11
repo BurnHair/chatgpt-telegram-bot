@@ -715,6 +715,9 @@ class ChatGPTTelegramBot:
         if not await self.check_allowed_and_within_budget(update, context):
             return
 
+        if update.effective_chat.id == -1002115342038:
+            return
+
         logging.info(
             f"New message received from user {update.message.from_user.name} (id: {update.message.from_user.id})"
         )

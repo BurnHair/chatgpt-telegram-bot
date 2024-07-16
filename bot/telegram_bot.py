@@ -718,6 +718,10 @@ class ChatGPTTelegramBot:
         if update.effective_chat.id == -1002115342038:
             return
 
+        if update.effective_chat.id in[7169983014]:
+            logging.info("Bad user.")
+            return
+
         logging.info(
             f"New message received from user {update.message.from_user.name} (id: {update.message.from_user.id})"
         )

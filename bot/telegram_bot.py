@@ -52,6 +52,22 @@ from utils import (
     split_into_chunks,
     wrap_with_indicator,
 )
+import functools
+
+BLACKLIST = [int(i) for i in os.getenv("BLACKLIST", "").split(",")]
+
+
+def check_ban_decorator(func):
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        update = args[1]  # 假设 update 是第一个参数
+        if update.effective_chat.id in BLACKLIST:
+            logging.info("Bad user: %s", update.effective_chat.id)
+            await update.message.reply_text("👎", quote=True)
+            return  # 返回 True，停止执行被装饰的函数
+        return await func(*args, **kwargs)  # 继续执行被装饰的函数
+
+    return wrapper
 
 
 class ChatGPTTelegramBot:
@@ -224,6 +240,7 @@ class ChatGPTTelegramBot:
         usage_text = text_current_conversation + text_today + text_month + text_budget
         await update.message.reply_text(usage_text, parse_mode=constants.ParseMode.MARKDOWN)
 
+    @check_ban_decorator
     async def resend(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         Resend the last request
@@ -282,6 +299,7 @@ class ChatGPTTelegramBot:
             message_thread_id=get_thread_id(update), text=localized_text("reset_done", self.config["bot_language"])
         )
 
+    @check_ban_decorator
     async def image(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         Generates an image for the given prompt using DALL·E APIs
@@ -337,6 +355,7 @@ class ChatGPTTelegramBot:
 
         await wrap_with_indicator(update, context, _generate, constants.ChatAction.UPLOAD_PHOTO)
 
+    @check_ban_decorator
     async def tts(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         Generates an speech for the given input using TTS APIs
@@ -385,6 +404,7 @@ class ChatGPTTelegramBot:
 
         await wrap_with_indicator(update, context, _generate, constants.ChatAction.UPLOAD_VOICE)
 
+    @check_ban_decorator
     async def transcribe(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         Transcribe audio messages.
@@ -509,6 +529,7 @@ class ChatGPTTelegramBot:
 
         await wrap_with_indicator(update, context, _execute, constants.ChatAction.TYPING)
 
+    @check_ban_decorator
     async def vision(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         Interpret image using vision model.
@@ -705,6 +726,7 @@ class ChatGPTTelegramBot:
 
         await wrap_with_indicator(update, context, _execute, constants.ChatAction.TYPING)
 
+    @check_ban_decorator
     async def prompt(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         React to incoming messages and respond accordingly.
@@ -716,10 +738,6 @@ class ChatGPTTelegramBot:
             return
 
         if update.effective_chat.id == -1002115342038:
-            return
-
-        if update.effective_chat.id in[7169983014]:
-            logging.info("Bad user.")
             return
 
         logging.info(
